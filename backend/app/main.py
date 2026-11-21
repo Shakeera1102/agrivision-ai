@@ -24,8 +24,11 @@ async def lifespan(app: FastAPI):
     logger.info("Selected Pipeline: ResNet50 + EfficientNetB0 + PCA + SVM")
     logger.info("==================================================")
     try:
+        import gc
         FeatureExtractionService.get_instance()
+        gc.collect()
         PredictionService.get_instance()
+        gc.collect()
         logger.info("All AgriVision AI models loaded successfully and ready for inference.")
     except Exception as exc:
         logger.error(f"Error during startup model loading: {exc}")

@@ -7,7 +7,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 os.environ["KERAS_HOME"] = os.path.join(BASE_DIR, "model", "keras_weights")
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+os.environ["TF_NUM_INTEROP_THREADS"] = "1"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
+os.environ["OMP_NUM_THREADS"] = "1"
 
+import gc
 import tensorflow as tf
 from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input as resnet_preprocess
 from tensorflow.keras.applications import EfficientNetB0
@@ -38,6 +42,7 @@ class FeatureExtractionService:
         )
         self.efficientnet.trainable = False
 
+        gc.collect()
         logger.info("TensorFlow ResNet50 (2048-dim) and EfficientNetB0 (1280-dim) loaded successfully.")
 
     @classmethod

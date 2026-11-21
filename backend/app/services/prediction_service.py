@@ -251,10 +251,12 @@ class PredictionService:
         if not os.path.exists(PCA_PATH):
             raise FileNotFoundError(f"PCA artifact not found at: {PCA_PATH}")
 
-        # Load models once
-        self.svm = joblib.load(SVM_MODEL_PATH)
+        # Load models using memory mapping (mmap_mode='r') to keep RAM footprint low (<350MB for cloud hosting)
+        import gc
         self.scaler = joblib.load(SCALER_PATH)
-        self.pca = joblib.load(PCA_PATH)
+        self.pca = joblib.load(PCA_PATH, mmap_mode="r")
+        self.svm = joblib.load(SVM_MODEL_PATH, mmap_mode="r")
+        gc.collect()
 
         logger.info(
             f"Loaded SVM (classes: {len(self.svm.classes_)}, expected features: {self.svm.n_features_in_})"
