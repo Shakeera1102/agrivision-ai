@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-// When deployed on Vercel, VITE_API_BASE_URL points to the Render backend (e.g., https://your-backend.onrender.com/api)
-// When running locally, it defaults to http://localhost:8000/api
+// Live Render backend URL: https://agrivision-ai-26nt.onrender.com/api
+// If running on localhost, use local backend: http://localhost:8000/api
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (
   typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? 'http://localhost:8000/api'
-    : '/api'
+    : 'https://agrivision-ai-26nt.onrender.com/api'
 );
 
 const apiClient = axios.create({
