@@ -286,8 +286,8 @@ class PredictionService:
         pca_features = self.pca.transform(scaled_features)
 
         # Confirm dimensions
-        original_dim = hybrid_features.shape[1]
-        reduced_dim = pca_features.shape[1]
+        original_dim = int(hybrid_features.shape[1])
+        reduced_dim = int(pca_features.shape[1])
 
         if reduced_dim != 1649:
             logger.warning(f"PCA output dimension is {reduced_dim}, expected 1649.")

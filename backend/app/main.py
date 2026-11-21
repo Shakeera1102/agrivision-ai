@@ -43,11 +43,11 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Configure CORS for ReactJS frontend
+# Configure CORS to allow any origin (e.g. Vercel, localhost, mobile)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -64,9 +64,9 @@ def get_health_data():
             "status": "healthy",
             "model_loaded": True,
             "pipeline": "Hybrid (ResNet50 + EfficientNetB0) + PCA (95%) + SVM",
-            "svm_classes": len(predictor.svm.classes_),
-            "pca_components": predictor.pca.n_components_,
-            "feature_dim": predictor.svm.n_features_in_
+            "svm_classes": int(len(predictor.svm.classes_)),
+            "pca_components": int(predictor.pca.n_components_),
+            "feature_dim": int(predictor.svm.n_features_in_)
         }
     except Exception as exc:
         return {

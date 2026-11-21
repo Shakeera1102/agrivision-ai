@@ -62,16 +62,17 @@ class FeatureExtractionService:
         img = pil_image.resize((224, 224))
         img_array = np.asarray(img, dtype=np.float32)
 
-        # 1. ResNet50 extraction
+        # 1. ResNet50 extraction (direct eager forward pass for low memory)
         resnet_input = np.expand_dims(img_array.copy(), axis=0)
         resnet_input = resnet_preprocess(resnet_input)
-        f_resnet = self.resnet50.predict(resnet_input, verbose=0).astype(np.float32)
+        f_resnet = self.resnet50(resnet_input, training=False).numpy().astype(np.float32)
 
         # 2. EfficientNetB0 extraction (expects raw [0, 255] array)
         eff_input = np.expand_dims(img_array.copy(), axis=0)
-        f_eff = self.efficientnet.predict(eff_input, verbose=0).astype(np.float32)
+        f_eff = self.efficientnet(eff_input, training=False).numpy().astype(np.float32)
 
         # 3. Hybrid concatenation: 2048 + 1280 = 3328
         hybrid_features = np.concatenate([f_resnet, f_eff], axis=1)
+        gc.collect()
 
         return f_resnet, f_eff, hybrid_features
